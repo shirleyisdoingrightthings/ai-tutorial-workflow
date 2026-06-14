@@ -8,7 +8,7 @@
 
 This is a structured workflow for learning AI concepts in depth, designed to run inside **Claude Code**, **Cursor**, **Codex**, or any AI environment that reads a `CLAUDE.md` file.
 
-Instead of a single monolithic prompt, the workflow uses **Progressive Disclosure**: the core rules stay under 80 lines, and specialized skills are loaded on demand — only when you need them. This keeps the context window clean and focused.
+Instead of a single monolithic prompt, the workflow uses **Progressive Disclosure**: `CLAUDE.md` stays lean (~120 lines) as the entry point, and specialized skills are loaded on demand — only when you need them. This keeps the context window clean and focused.
 
 ---
 
@@ -16,7 +16,7 @@ Instead of a single monolithic prompt, the workflow uses **Progressive Disclosur
 
 | Feature | What It Does |
 |---|---|
-| 🧩 **Progressive Disclosure** | `CLAUDE.md` is the lean entry point (~80 lines). Detailed rules live in `skills/` and are loaded only when triggered |
+| 🧩 **Progressive Disclosure** | `CLAUDE.md` is the lean entry point (~120 lines). Detailed rules live in `skills/` and are loaded only when triggered |
 | 🏛️ **QA Council** | Conservative + Progressive dual-role reviewers audit whether workflow rules need updating — no single point of failure |
 | 🧠 **Session Handoff** | `logs/session_handoff.md` acts as a context passport — switch AI environments mid-topic without losing your place |
 | 🎯 **Quiz Skill** | After learning a concept, get tested with recall / application / scenario questions to verify real understanding |
@@ -46,8 +46,11 @@ Instead of a single monolithic prompt, the workflow uses **Progressive Disclosur
 AI Tutorial/
 ├── CLAUDE.md                    # Entry point — loaded automatically on startup
 ├── PROFILE.md                   # Your learning preferences (fill this in first)
+├── PLAYBOOK.md                  # Day-to-day usage guide (commands, gate check)
+├── config.sh                    # Path config — single source of truth for external tool paths
 ├── research_methodology.md      # Source verification protocol (loaded on demand)
 ├── qa_proposals.md              # QA Council proposals — review and approve here
+├── CHANGELOG.md                 # Architecture iteration history
 ├── check_health.sh              # System health check script
 │
 ├── skills/                      # On-demand skill modules
@@ -102,6 +105,8 @@ User asks a question
 **Change your learning preferences** → Edit `PROFILE.md`
 
 **Change how notes are saved** → Edit `skills/note_taking.md`
+
+**Moved the transcript toolkit / different machine** → Edit the one path in `config.sh` (both `check_health.sh` and `link_handling.md` read from it)
 
 **Add a new skill** → Create `skills/your_skill.md`, add a trigger rule in `CLAUDE.md`'s Skills Index, update this README's file structure
 

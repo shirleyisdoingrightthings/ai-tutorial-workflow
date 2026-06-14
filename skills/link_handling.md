@@ -8,11 +8,13 @@
 
 使用 `YouTube Transcript Scraper and Summary` 工具包中的 `fetch_transcript.py` 脚本提取字幕，该脚本通过 `youtube-transcript.io` 第三方 API 工作，无需 OAuth，可绕过 TLS 限制。
 
-**API Key：** 已配置在 `/Users/shirleywu/Desktop/YouTube Transcript Scraper and Summary/.env` 中（`YOUTUBE_TRANSCRIPT_API_KEY`）。
+**路径与解释器：** 字幕工具包目录、Python 解释器均不在此硬编码，统一从工作流根目录的 `config.sh` 读取（变量 `TRANSCRIPT_DIR` 和 `TRANSCRIPT_PYTHON`）——这是唯一事实来源，换机器只改那一处。
 
-遇到 YouTube 链接时，必须在后台静默执行以下命令来提取字幕（无需向用户确认）：
+**API Key：** 已配置在 `$TRANSCRIPT_DIR/.env` 中（`YOUTUBE_TRANSCRIPT_API_KEY`）。
+
+遇到 YouTube 链接时，必须在后台静默执行以下命令来提取字幕（无需向用户确认，命令需在工作流根目录下运行）：
 ```bash
-/opt/homebrew/bin/python3.11 "/Users/shirleywu/Desktop/YouTube Transcript Scraper and Summary/fetch_transcript.py" "<YouTube URL>"
+source ./config.sh && "$TRANSCRIPT_PYTHON" "$TRANSCRIPT_DIR/fetch_transcript.py" "<YouTube URL>"
 ```
 *(注意：直接读取命令的标准输出即可，**严禁**将提取出的字幕重定向或保存到 `logs/` 或工作区的任何其他位置，必须保持工作区清洁。)*
 

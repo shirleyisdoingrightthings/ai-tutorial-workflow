@@ -8,6 +8,15 @@
 # 
 # 运行方式： ./check_health.sh
 
+# 加载路径配置（单一事实来源）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [ -f "$SCRIPT_DIR/config.sh" ]; then
+    source "$SCRIPT_DIR/config.sh"
+else
+    echo "[FAIL] 找不到 config.sh，无法确定字幕工具包路径"
+    exit 1
+fi
+
 # 颜色定义
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -38,24 +47,31 @@ warn() {
 # --- 检查项定义区域 ---
 
 check_transcript_script() {
-    SCRIPT_PATH="../YouTube Transcript Scraper and Summary/fetch_transcript.py"
+    SCRIPT_PATH="$TRANSCRIPT_DIR/fetch_transcript.py"
     if [ -f "$SCRIPT_PATH" ]; then
         pass "字幕抓取脚本存在 ($SCRIPT_PATH)"
+        # 进一步验证脚本能真正运行（依赖 + 解释器），而不只是文件存在
+        if "$TRANSCRIPT_PYTHON" -c "import requests, dotenv" 2>/dev/null; then
+            pass "Python 依赖就绪 (requests + dotenv，解释器 $TRANSCRIPT_PYTHON)"
+        else
+            fail "Python 依赖缺失：请运行 $TRANSCRIPT_PYTHON -m pip install -r \"$TRANSCRIPT_DIR/requirements.txt\""
+        fi
     else
         fail "找不到字幕抓取脚本 ($SCRIPT_PATH)"
     fi
 }
 
 check_api_keys() {
-    ENV_PATH=".env"
+    # API Key 配置在字幕工具包目录的 .env 中，不在本工作流目录
+    ENV_PATH="$TRANSCRIPT_DIR/.env"
     if [ -f "$ENV_PATH" ]; then
-        if grep -q "YOUTUBE_API_KEY" "$ENV_PATH" || grep -q "YOUTUBE_TRANSCRIPT_API_KEY" "$ENV_PATH"; then
-            pass "环境变量文件存在，且包含 YouTube API Key"
+        if grep -qE "YOUTUBE_(TRANSCRIPT_)?API_KEY=.+" "$ENV_PATH"; then
+            pass "环境变量文件存在，且 YouTube API Key 已填写"
         else
-            warn "存在 .env 文件，但没有找到 YouTube 相关的 API Key 配置"
+            warn "存在 .env 文件，但 YouTube API Key 为空或缺失"
         fi
     else
-        warn "找不到 .env 文件，YouTube 抓取可能受限"
+        warn "找不到 .env 文件 ($ENV_PATH)，YouTube 抓取可能受限"
     fi
 }
 
