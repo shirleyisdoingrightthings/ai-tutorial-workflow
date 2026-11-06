@@ -34,7 +34,7 @@ description: >-
 | 把握度不足 | — |
 | 问"最新进展"/"现在主流" | — |
 
-如需查资料 → 加载 `research_methodology.md` 执行研究流程，再进行解释。
+如需查资料 → 加载 `research_methodology.md` 执行研究流程，**并优先调用 Exa MCP（`web_search_exa`、`web_search_advanced_exa`、`web_fetch_exa`）检索最新一手论文、官方文档与工程博客全文**，再进行解释。
 
 ---
 
